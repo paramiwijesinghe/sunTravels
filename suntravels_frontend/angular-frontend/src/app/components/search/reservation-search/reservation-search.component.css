@@ -1,0 +1,104 @@
+.search-container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    background: #fff;
+  }
+  
+  h2, h3 {
+    text-align: center;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+  }
+  
+  button {
+    background: #007bff;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  button:hover {
+    background: #0056b3;
+  }
+  
+  .hotel-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 6px;
+    background: #f9f9f9;
+  }
+  
+  .room-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .room-card {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+  }
+  
+  .room-request {
+    margin-bottom: 10px;
+  }
+  
+  .room-request label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .input-remove-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .input-remove-container input {
+    flex: 1;
+  }
+  
+  .input-remove-container button {
+    margin-left: 10px;
+  }
+  
+
+  .total-price {
+    color: #28a745;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .loading {
+    text-align: center;
+    font-size: 16px;
+    color: #007bff;
+  }
+  
+  .error-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+  }
+  

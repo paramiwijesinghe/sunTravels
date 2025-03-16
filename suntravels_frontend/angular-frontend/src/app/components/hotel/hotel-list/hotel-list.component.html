@@ -1,0 +1,34 @@
+<div class="container">
+    <h2>Hotel List</h2>
+    <button routerLink="/hotels/new">Add Hotel</button>
+    <button (click)="navigateToViewContracList()">Go to Contract List</button>
+    <button (click)="navigateToSearch()">Go to Reservation Search</button>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Contact</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let hotel of hotels">
+          <td>{{ hotel.id }}</td>
+          <td>{{ hotel.name }}</td>
+          <td>{{ hotel.location }}</td>
+          <td>{{ hotel.contactDetails }}</td>
+          <td>
+            <button [routerLink]="['/hotels/edit', hotel.id]">Edit</button>
+            <button (click)="deleteHotel(hotel.id!)">Delete</button>
+          </td>
+          <td>
+            <button (click)="navigateToAddContract(hotel.id!, hotel.name)">Add Contract</button>
+          </td>          
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  </div>
+  

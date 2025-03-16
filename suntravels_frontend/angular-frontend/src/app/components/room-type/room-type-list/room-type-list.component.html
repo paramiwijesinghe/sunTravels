@@ -1,0 +1,21 @@
+<h2>Room Types</h2>
+<a [routerLink]="['/contracts', contractId, 'room-types', 'new']" class="btn btn-primary">Add Room Type</a>
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Price</th>
+    <th>Rooms</th>
+    <th>Max Adults</th>
+    <th>Actions</th>
+  </tr>
+  <tr *ngFor="let roomType of roomTypes">
+    <td>{{ roomType.name }}</td>
+    <td>{{ roomType.pricePerPerson }}</td>
+    <td>{{ roomType.numberOfRooms }}</td>
+    <td>{{ roomType.maxAdults }}</td>
+    <td>
+      <a [routerLink]="['/contracts', contractId, 'room-types', 'edit', roomType.id]">Edit</a> |
+      <button (click)="deleteRoomType(roomType.id)">Delete</button>
+    </td>
+  </tr>
+</table>
