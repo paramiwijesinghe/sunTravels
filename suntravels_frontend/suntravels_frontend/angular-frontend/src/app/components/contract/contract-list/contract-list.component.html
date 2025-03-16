@@ -1,0 +1,23 @@
+<button (click)="navigateToHotelList()">Go to Hotel List</button>
+<button (click)="navigateToSearch()">Go to Reservation Search</button>
+
+<table>
+  <tr>
+    <th>Hotel Name</th>
+    <th>Start Date</th>
+    <th>End Date</th>
+    <th>Markup %</th>
+    <th>Actions</th>
+  </tr>
+  <tr *ngFor="let contract of contracts">
+    <td>{{ contract.hotelName }}</td>
+    <td>{{ contract.startDate }}</td>
+    <td>{{ contract.endDate }}</td>
+    <td>{{ contract.markupPercentage }}</td>
+
+    <td>
+      <button (click)="editContract(contract.id!)">Edit</button>
+      <button (click)="deleteContract(contract.id!)">Delete</button>
+    </td>
+  </tr>
+</table>

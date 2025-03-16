@@ -1,0 +1,20 @@
+<div class="container">
+    <h1>Hotel Form</h1>
+    <h2>{{ isEditMode ? 'Edit Hotel' : 'Add Hotel' }}</h2>
+    <form [formGroup]="hotelForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label for="name">Hotel Name:</label>
+        <input id="name" formControlName="name" type="text">
+      </div>
+      <div>
+        <label for="location">Location:</label>
+        <input id="location" formControlName="location" type="text">
+      </div>
+      <div>
+        <label for="contactDetails">Contact Details:</label>
+        <input id="contactDetails" formControlName="contactDetails" type="text">
+      </div>
+      <button type="submit">{{ isEditMode ? 'Update' : 'Add' }}</button>
+    </form>
+  </div>
+ 

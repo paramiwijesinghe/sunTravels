@@ -1,0 +1,140 @@
+/* General container styling */
+.search-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+/* Header styling */
+h2, h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Labels */
+label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+/* Input fields */
+input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+}
+
+input:focus {
+    border-color: #007bff;
+}
+
+/* Buttons */
+button {
+    padding: 10px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Primary buttons */
+button[type="submit"], button[type="button"] {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+/* Remove button */
+button[type="button"]:nth-child(2) {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Button hover effects */
+button:hover {
+    opacity: 0.9;
+}
+
+/* Search results section */
+.search-results {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Individual search result */
+.result-card {
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+}
+
+/* Room availability styling */
+.result-card p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.result-card p:last-child {
+    font-weight: bold;
+}
+
+/* Availability status */
+.result-card p:has(.available) {
+    color: #28a745;
+}
+
+.result-card p:has(.not-available) {
+    color: #dc3545;
+}
+
+/* Loader */
+.isLoading {
+    text-align: center;
+    font-size: 16px;
+    color: #007bff;
+    margin-top: 10px;
+}
+
+/* Error message */
+.error-message {
+    color: red;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    input, button {
+        font-size: 13px;
+        padding: 8px;
+    }
+}

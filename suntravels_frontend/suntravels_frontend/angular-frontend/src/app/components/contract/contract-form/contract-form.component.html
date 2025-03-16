@@ -1,0 +1,70 @@
+<div class="contract-form">
+  <h3>Contract Management</h3>
+
+  <form (ngSubmit)="saveContract()" #contractForm="ngForm">
+    <div>
+      <label>Hotel:</label>
+      <input [(ngModel)]="contract.hotelName" name="hotelName" type="text" required readonly>
+    
+      <label>Valid From:</label>
+      <input [(ngModel)]="contract.startDate" name="startDate" type="date" required>
+    
+      <label>Valid To:</label>
+      <input [(ngModel)]="contract.endDate" name="endDate" type="date" required>
+    
+      <label>Markup Percentage:</label>
+      <input [(ngModel)]="contract.markupPercentage" name="markupPercentage" type="number" required min="0">
+    </div>
+
+    <!-- Room Types Section -->
+    <h4>Room Types</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>Room Type</th>
+          <th>Price Per Night ($)</th>
+          <th>Total Rooms</th>
+          <th>Max Adults</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let room of contract.roomTypes; let i = index">
+          <td>{{ room.name }}</td>
+          <td>{{ room.pricePerPerson }}</td>
+          <td>{{ room.numberOfRooms }}</td>
+          <td>{{ room.maxAdults }}</td>
+          <td>
+            <button type="button" (click)="editRoomType(i)">Edit</button>
+            <button type="button" (click)="removeRoomType(i)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Add/Edit Room Type Form -->
+    <h4>{{ isEditing ? 'Edit' : 'Add' }} Room Type</h4>
+    <div>
+      <label>Room Type:</label>
+      <input [(ngModel)]="newRoomType.name" name="roomTypeName" type="text" required>
+
+      <label>Price Per Night ($):</label>
+      <input [(ngModel)]="newRoomType.pricePerPerson" name="roomPrice" type="number" required min="0">
+
+      <label>Total Rooms:</label>
+      <input [(ngModel)]="newRoomType.numberOfRooms" name="roomCount" type="number" required min="1">
+
+      <label>Max Adults:</label>
+      <input [(ngModel)]="newRoomType.maxAdults" name="maxAdults" type="number" required min="1">
+    </div>
+
+    <button type="button" (click)="addRoomType()" 
+      [disabled]="!newRoomType.name || !newRoomType.pricePerPerson || !newRoomType.numberOfRooms || !newRoomType.maxAdults">
+      {{ isEditing ? 'Update Room Type' : 'Add Room Type' }}
+    </button>
+
+
+    <br/>
+    <button type="submit" >Save Contract</button>
+  </form>
+</div>
