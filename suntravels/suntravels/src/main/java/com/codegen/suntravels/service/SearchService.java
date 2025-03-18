@@ -34,6 +34,7 @@ public class SearchService {
 
         LocalDate checkOutDate = searchRequestDTO.getCheckInDate().plusDays(searchRequestDTO.getNumberOfNights());
 
+
         List<Contract> validContracts = contractRepository.findValidContractsForDateRange(
                 searchRequestDTO.getCheckInDate(), checkOutDate);
 
@@ -73,7 +74,10 @@ public class SearchService {
             results.add(result);
         }
 
+
+
         return results;
+
     }
 
     private boolean isRoomAvailable(RoomType roomType, List<RoomRequestDTO> roomRequests) {
@@ -88,9 +92,7 @@ public class SearchService {
     private double calculateTotalPrice(RoomType roomType, List<RoomRequestDTO> roomRequests,
                                        Integer numberOfNights, double markupPercentage) {
         double totalPrice = 0;
-        int count=0;
         for (RoomRequestDTO roomRequest : roomRequests) {
-            count++;
             totalPrice += roomType.getPricePerPerson() *
                                   (1 + markupPercentage / 100) *
                                   numberOfNights *
