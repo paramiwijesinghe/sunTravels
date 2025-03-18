@@ -134,4 +134,36 @@ public class ContractService {
 
         return contract;
     }
+
+
+    public List<ContractDTO> searchContracts(String hotelName, LocalDate startDate, LocalDate endDate) {
+        List<Contract> contracts = contractRepository.findAll();
+
+        return contracts.stream()
+                        .filter(contract -> {
+                            boolean matches = true;
+
+                            if (hotelName != null && !hotelName.isEmpty()) {
+                                matches = contract.getHotel().getName().toLowerCase().contains(hotelName.toLowerCase());
+                            }
+
+//                            if (matches && startDate != null) {
+//                                matches = contract.getStartDate().isEqual(startDate) || contract.getStartDate().isAfter(startDate);
+//                            }
+//
+//                            if (matches && endDate != null) {
+//                                matches = contract.getEndDate().isEqual(endDate) || contract.getEndDate().isBefore(endDate);
+//                            }
+                            if (matches && startDate != null && endDate != null) {
+                                // Contract must start on or before startDate AND end on or after endDate
+                                matches = !contract.getStartDate().isAfter(startDate) &&
+                                                  !contract.getEndDate().isBefore(endDate);
+                            }
+
+
+                            return matches;
+                        })
+                        .map(this::convertToDTO)
+                        .collect(Collectors.toList());
+    }
 }

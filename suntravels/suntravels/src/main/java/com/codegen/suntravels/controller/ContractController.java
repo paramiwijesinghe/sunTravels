@@ -3,6 +3,7 @@ package com.codegen.suntravels.controller;
 import com.codegen.suntravels.dto.ContractDTO;
 import com.codegen.suntravels.dto.ContractExpiryReportDTO;
 import com.codegen.suntravels.service.ContractService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,5 +52,15 @@ public class ContractController {
             @RequestParam LocalDate fromDate,
             @RequestParam LocalDate toDate) {
         return ResponseEntity.ok(contractService.getContractsExpiringBetween(fromDate, toDate));
+    }
+
+
+    @GetMapping("/search")
+    public ResponseEntity<List<ContractDTO>> searchContracts(
+            @RequestParam(required = false) String hotelName,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+
+        return ResponseEntity.ok(contractService.searchContracts(hotelName, startDate, endDate));
     }
 }

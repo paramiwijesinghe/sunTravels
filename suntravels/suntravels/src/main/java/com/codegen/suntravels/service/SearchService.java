@@ -3,7 +3,6 @@ package com.codegen.suntravels.service;
 import com.codegen.suntravels.dto.*;
 import com.codegen.suntravels.model.Contract;
 import com.codegen.suntravels.model.RoomType;
-import com.codegen.suntravels.dto.RoomRequestDTO;
 import com.codegen.suntravels.repository.ContractRepository;
 import com.codegen.suntravels.repository.RoomTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,6 @@ public class SearchService {
     }
 
     public List<SearchResultDTO> searchAvailableRooms(SearchRequestDTO searchRequestDTO) {
-        // Validate input
         if (searchRequestDTO.getCheckInDate() == null ||
                     searchRequestDTO.getNumberOfNights() == null ||
                     searchRequestDTO.getRoomRequests() == null ||
@@ -34,97 +32,78 @@ public class SearchService {
             return Collections.emptyList();
         }
 
-        // Calculate check-out date
         LocalDate checkOutDate = searchRequestDTO.getCheckInDate().plusDays(searchRequestDTO.getNumberOfNights());
 
-        // Find valid contracts for the date range
         List<Contract> validContracts = contractRepository.findValidContractsForDateRange(
                 searchRequestDTO.getCheckInDate(), checkOutDate);
 
-        // Process each contract to find available room types
         List<SearchResultDTO> results = new ArrayList<>();
+
         for (Contract contract : validContracts) {
             SearchResultDTO result = new SearchResultDTO();
             result.setHotelName(contract.getHotel().getName());
 
-            // Find available room types for this contract based on the requirements
-            List<RoomTypeResultDTO> availableRoomTypes = findAvailableRoomTypes(
-                    contract,
-                    searchRequestDTO.getRoomRequests(),
-                    searchRequestDTO.getNumberOfNights()
-            );
+            List<RoomTypeResultDTO> allRoomTypes = new ArrayList<>();
 
-            if (!availableRoomTypes.isEmpty()) {
-                result.setAvailableRoomTypes(availableRoomTypes);
-                results.add(result);
+            for (RoomType roomType : contract.getRoomTypes()) {
+                RoomTypeResultDTO roomTypeResult = new RoomTypeResultDTO();
+                roomTypeResult.setId(roomType.getId());
+                roomTypeResult.setName(roomType.getName());
+                roomTypeResult.setMaxAdults(roomType.getMaxAdults());
+                roomTypeResult.setAvailableRooms(roomType.getNumberOfRooms());
+
+                // Check if this room type meets the request criteria
+                boolean isAvailable = isRoomAvailable(roomType, searchRequestDTO.getRoomRequests());
+
+                roomTypeResult.setAvailable(isAvailable);
+
+                // Calculate total price if available
+                if (isAvailable) {
+                    double totalPrice = calculateTotalPrice(roomType, searchRequestDTO.getRoomRequests(),
+                            searchRequestDTO.getNumberOfNights(), contract.getMarkupPercentage());
+                    roomTypeResult.setTotalPrice(totalPrice);
+                } else {
+                    roomTypeResult.setTotalPrice(0.0); // Set to 0 if not matching user request
+                }
+
+                allRoomTypes.add(roomTypeResult);
             }
+
+            result.setAvailableRoomTypes(allRoomTypes);
+            results.add(result);
         }
 
         return results;
     }
 
-    private List<RoomTypeResultDTO> findAvailableRoomTypes(
-            Contract contract,
-            List<RoomRequestDTO> roomRequests,
-            Integer numberOfNights) {
-
-        // Calculate the maximum number of adults needed for any room
+    private boolean isRoomAvailable(RoomType roomType, List<RoomRequestDTO> roomRequests) {
         int maxAdultsNeeded = roomRequests.stream()
                                           .mapToInt(RoomRequestDTO::getNumberOfAdults)
                                           .max()
                                           .orElse(0);
 
-        // Count how many rooms of each adult capacity are needed
-        Map<Integer, Long> roomsNeededByAdultCount = roomRequests.stream()
-                                                                 .collect(Collectors.groupingBy(RoomRequestDTO::getNumberOfAdults, Collectors.counting()));
+        return roomType.getMaxAdults() >= maxAdultsNeeded && roomType.getNumberOfRooms() >= roomRequests.size();
+    }
 
-        // Get all room types for this contract that can accommodate the max number of adults
-        List<RoomType> possibleRoomTypes = contract.getRoomTypes().stream()
-                                                   .filter(rt -> rt.getMaxAdults() >= maxAdultsNeeded)
-                                                   .collect(Collectors.toList());
+    private double calculateTotalPrice(RoomType roomType, List<RoomRequestDTO> roomRequests,
+                                       Integer numberOfNights, double markupPercentage) {
+        double totalPrice = 0;
+        int count=0;
+        for (RoomRequestDTO roomRequest : roomRequests) {
+            count++;
+            totalPrice += roomType.getPricePerPerson() *
+                                  (1 + markupPercentage / 100) *
+                                  numberOfNights *
+                                  roomRequest.getNumberOfAdults();
+            System.out.println( roomRequest.getNumberOfAdults());
 
-        List<RoomTypeResultDTO> results = new ArrayList<>();
-
-        // Check each room type
-        for (RoomType roomType : possibleRoomTypes) {
-            // Check if we have enough rooms of this type
-            boolean isAvailable = roomType.getNumberOfRooms() >= roomRequests.size();
-
-            // Calculate total price for all requested rooms
-            double totalPrice = 0;
-            if (isAvailable) {
-                for (RoomRequestDTO roomRequest : roomRequests) {
-                    // Price = basePrice * markup * nights * adults
-                    totalPrice += roomType.getPricePerPerson() *
-                                          (1 + contract.getMarkupPercentage() / 100) *
-                                          numberOfNights *
-                                          roomRequest.getNumberOfAdults();
-
-
-                    // Round totalPrice to two decimal places
-                    totalPrice = Math.round(totalPrice * 100.0) / 100.0;
-                }
-
-
-                RoomTypeResultDTO roomTypeResult = new RoomTypeResultDTO();
-                roomTypeResult.setId(roomType.getId());
-                roomTypeResult.setName(roomType.getName());
-                roomTypeResult.setTotalPrice(totalPrice);
-                roomTypeResult.setAvailable(isAvailable);
-                roomTypeResult.setMaxAdults(roomType.getMaxAdults());
-                roomTypeResult.setAvailableRooms(roomType.getNumberOfRooms());
-
-                results.add(roomTypeResult);
-            }
         }
-
-        return results;
+        return Math.round(totalPrice * 100.0) / 100.0;
     }
 
     public List<RoomAvailabilityReportDTO> generateRoomAvailabilityReport(LocalDate fromDate, LocalDate toDate) {
         List<RoomAvailabilityReportDTO> report = new ArrayList<>();
 
-        // Find valid contracts for the date range
         List<Contract> validContracts = contractRepository.findValidContractsForDateRange(fromDate, toDate);
 
         for (Contract contract : validContracts) {
